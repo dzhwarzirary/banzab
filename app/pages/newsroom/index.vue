@@ -1,84 +1,162 @@
 <template>
-  <div class="min-h-screen py-16 md:py-20">
-    <!-- Page Header -->
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center mb-12 md:mb-20">
-      <h1 class="text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 mb-6 md:mb-8 tracking-tight">
-        Newsroom
-      </h1>
-      <p class="text-base md:text-lg text-gray-600 font-light leading-relaxed">
-        Latest news, insights, and updates from Banzab and our portfolio
-        companies
-      </p>
+  <div class="pt-14 md:pt-16">
+    <!-- Header -->
+    <div class="max-w-4xl mx-auto px-6 md:px-8 mb-16 md:mb-24">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 items-end">
+        <div class="md:col-span-7">
+          <p
+            class="text-xs uppercase tracking-[0.15em] text-gray-400 font-medium mb-5"
+          >
+            Newsroom
+          </p>
+          <h1
+            class="text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 tracking-tight leading-tight mb-6"
+          >
+            Latest updates
+          </h1>
+          <p
+            class="text-base md:text-lg text-gray-500 font-light leading-relaxed max-w-xl"
+          >
+            News, insights, and updates from Banzab and our portfolio companies.
+          </p>
+        </div>
+      </div>
     </div>
 
-    <!-- Loading State -->
-    <div v-if="pending" class="text-center py-20">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-slate-900"></div>
+    <!-- Loading -->
+    <div
+      v-if="pending"
+      class="max-w-4xl mx-auto px-6 md:px-8 py-20 text-center"
+    >
+      <div
+        class="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"
+      ></div>
     </div>
 
-    <!-- Error State -->
-    <div v-else-if="error" class="text-center py-20">
-      <p class="text-gray-600 font-light">Unable to load newsroom articles.</p>
+    <!-- Error -->
+    <div
+      v-else-if="error"
+      class="max-w-6xl mx-auto px-6 md:px-8 py-20 text-center"
+    >
+      <p class="text-gray-500 font-light">Unable to load articles.</p>
     </div>
 
-    <!-- News Articles -->
-    <div v-else class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div v-if="newsArticles.length === 0" class="text-center py-20">
-        <p class="text-gray-500 font-light">No articles available.</p>
+    <!-- Articles -->
+    <div v-else class="max-w-4xl mx-auto px-6 md:px-8 mb-16 md:mb-20">
+      <div v-if="newsArticles.length === 0" class="py-20 text-center">
+        <p class="text-gray-500 font-light">No articles yet.</p>
       </div>
 
-      <div v-else class="space-y-12 md:space-y-16">
+      <div v-else>
+        <!-- Featured / First Article -->
         <article
-          v-for="article in newsArticles"
-          :key="article._path"
-          class="group cursor-pointer"
-          @click="navigateToArticle(article._path)"
+          v-if="newsArticles[0]"
+          class="group cursor-pointer mb-16 md:mb-20"
+          @click="navigateToArticle(newsArticles[0]._path)"
         >
-          <div class="border-b border-gray-200 pb-8 md:pb-12 hover:border-gray-300 transition-colors">
-            <!-- Date and Category -->
-            <div class="flex flex-wrap items-center gap-4 mb-4">
-              <time :datetime="article.date" class="text-xs text-gray-500 font-light uppercase tracking-wider">
-                {{ formatDate(article.date) }}
+          <div class="border-b border-gray-200 pb-12 md:pb-16">
+            <div class="flex items-center gap-3 mb-5">
+              <time
+                :datetime="newsArticles[0].date"
+                class="text-[11px] uppercase tracking-[0.12em] text-gray-400 font-medium"
+              >
+                {{ formatDate(newsArticles[0].date) }}
               </time>
-              <span v-if="article.category" class="text-xs text-slate-900 font-medium uppercase tracking-wider">
-                {{ article.category }}
+              <span class="w-1 h-1 rounded-full bg-gray-300"></span>
+              <span
+                v-if="newsArticles[0].category"
+                class="text-[11px] uppercase tracking-[0.12em] text-gray-900 font-medium"
+              >
+                {{ newsArticles[0].category }}
               </span>
             </div>
-
-            <!-- Title -->
-            <h2 class="text-xl md:text-2xl font-light text-gray-900 mb-4 md:mb-6 group-hover:text-gray-700 transition-colors leading-tight">
-              {{ article.title }}
+            <h2
+              class="text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 tracking-tight leading-tight mb-5 group-hover:text-gray-600 transition-colors"
+            >
+              {{ newsArticles[0].title }}
             </h2>
-
-            <!-- Description -->
-            <p class="text-base text-gray-600 leading-relaxed mb-6 md:mb-8 font-light">
-              {{ article.description }}
+            <p
+              class="text-base md:text-lg text-gray-500 font-light leading-relaxed max-w-2xl mb-6"
+            >
+              {{ newsArticles[0].description }}
             </p>
-
-            <p v-if="article.excerpt" class="text-gray-500 mb-6 md:mb-8 font-light text-sm">
-              {{ article.excerpt }}
-            </p>
-
-            <!-- Meta -->
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-              <div class="flex flex-wrap items-center gap-4 md:gap-6">
-                <span v-if="article.author" class="text-sm text-gray-500 font-light">
-                  {{ article.author }}
-                </span>
-                <span v-if="article.featured" class="text-xs text-slate-900 font-medium uppercase tracking-wider">
-                  Featured
-                </span>
-              </div>
-
-              <span class="inline-flex items-center text-slate-900 font-medium group-hover:text-gray-600 transition-colors text-sm uppercase tracking-wide border-b border-gray-300 group-hover:border-gray-600 pb-1">
-                Read Article
-                <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                </svg>
-              </span>
-            </div>
+            <span
+              class="inline-flex items-center gap-2 text-sm text-gray-900 font-medium group-hover:text-gray-600 transition-colors"
+            >
+              <span>Read article</span>
+              <svg
+                class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
+              </svg>
+            </span>
           </div>
         </article>
+
+        <!-- Rest of Articles -->
+        <div class="space-y-0">
+          <article
+            v-for="article in newsArticles.slice(1)"
+            :key="article._path"
+            class="group cursor-pointer"
+            @click="navigateToArticle(article._path)"
+          >
+            <div
+              class="border-b border-gray-200 py-8 md:py-10 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-start"
+            >
+              <!-- Date -->
+              <div class="md:col-span-3">
+                <time
+                  :datetime="article.date"
+                  class="text-[11px] uppercase tracking-[0.12em] text-gray-400 font-medium"
+                >
+                  {{ formatDate(article.date) }}
+                </time>
+                <span
+                  v-if="article.category"
+                  class="block text-[11px] uppercase tracking-[0.12em] text-gray-900 font-medium mt-1"
+                >
+                  {{ article.category }}
+                </span>
+              </div>
+              <!-- Content -->
+              <div class="md:col-span-7">
+                <h2
+                  class="text-xl md:text-2xl font-light text-gray-900 tracking-tight leading-snug mb-2 group-hover:text-gray-600 transition-colors"
+                >
+                  {{ article.title }}
+                </h2>
+                <p class="text-sm text-gray-500 font-light leading-relaxed">
+                  {{ article.description }}
+                </p>
+              </div>
+              <!-- Arrow -->
+              <div class="md:col-span-2 hidden md:flex justify-end pt-1">
+                <svg
+                  class="w-4 h-4 text-gray-300 group-hover:text-gray-900 group-hover:translate-x-0.5 transition-all"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </div>
+            </div>
+          </article>
+        </div>
       </div>
     </div>
   </div>
