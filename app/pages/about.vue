@@ -216,7 +216,7 @@
           </div>
           <div class="md:col-span-9">
             <p class="text-sm text-gray-500 font-light leading-relaxed">
-              Continued expansion, new product lines, and a growing portfolio of
+              Continued expansion, new product lines, and a growing brands of
               brands that raise the bar for F&B in the region.
             </p>
           </div>

@@ -5,7 +5,7 @@
       <p
         class="text-xs uppercase tracking-[0.15em] text-gray-400 font-medium mb-5"
       >
-        Portfolio
+        Brands
       </p>
       <h1
         class="text-4xl md:text-5xl lg:text-7xl font-light text-gray-900 tracking-tight leading-tight mb-5"
@@ -35,7 +35,7 @@
         <NuxtLink
           v-for="company in companies"
           :key="company._id"
-          :to="`/portfolio/${company.slug.current}`"
+          :to="`/brands/${company.slug.current}`"
           class="group block"
         >
           <div
@@ -162,19 +162,19 @@ import { useSanityQuery } from "~/composables/useSanity";
 import { urlFor } from "~/utils/sanity";
 
 useHead({
-  title: "Portfolio - Banzab",
+  title: "Brands - Banzab",
   meta: [
     {
       name: "description",
       content:
-        "Explore Banzab's portfolio of food and beverage brands building the future of F&B in Kurdistan.",
+        "Explore Banzab's brands of food and beverage brands building the future of F&B in Kurdistan.",
     },
   ],
 });
 
 const { data: companies } = await useSanityQuery(
-  "portfolio-list",
-  `*[_type == "portfolioCompany"] | order(sortOrder asc) {
+  "brands-list",
+  `*[_type == "brand"] | order(sortOrder asc) {
     _id,
     name,
     slug,

@@ -12,7 +12,7 @@ export default defineContentConfig({
         category: z.enum([
           "Company News",
           "Insights",
-          "Portfolio Updates",
+          "Brand Updates",
           "Press Release",
         ]),
         author: z.string().optional(),

@@ -52,10 +52,10 @@
                 <!-- Right: Button -->
                 <div class="flex-shrink-0 pb-1">
                   <NuxtLink
-                    to="/portfolio"
+                    to="/brands"
                     class="inline-flex items-center gap-3 text-white border border-white/30 px-6 py-3.5 rounded-full text-sm font-medium hover:bg-white/10 hover:border-white/50 transition-all"
                   >
-                    <span>Explore Our Portfolio</span>
+                    <span>Explore Our Brands</span>
                     <svg
                       class="w-4 h-4"
                       fill="none"
@@ -75,15 +75,6 @@
             </div>
           </div>
         </div>
-
-        <!-- Bottom tagline - hidden at top, fades in only at bottom -->
-        <div class="video-tagline" :style="{ opacity: taglineOpacity }">
-          <span
-            class="text-4xl md:text-6xl lg:text-[15rem] font-medium text-white tracking-tighter uppercase"
-          >
-            Banzab
-          </span>
-        </div>
       </section>
     </div>
 
@@ -91,12 +82,14 @@
     <HomeQuoteStats :data="homepage" />
     <HomeMarquee :items="homepage?.marqueeItems" />
     <HomeWhyBanzab :data="homepage" />
-    <HomePortfolio />
+    <HomeBrands />
     <HomePartners :data="homepage" />
     <HomeCTA :data="homepage" />
 
-    <!-- Bottom spacer - limited reveal of video + tagline -->
-    <div class="bottom-reveal"></div>
+    <!-- Footer -->
+    <div class="homepage-footer">
+      <AppFooter />
+    </div>
   </div>
 </template>
 
@@ -121,9 +114,9 @@ const { data: homepage } = await useSanityQuery(
     whyBanzabHeading,
     whyBanzabSubtitle,
     pillars,
-    portfolioEyebrow,
-    portfolioHeading,
-    portfolioSubtitle,
+    brandsEyebrow,
+    brandsHeading,
+    brandsSubtitle,
     partnersEyebrow,
     partnersHeading,
     partnersList,
@@ -134,12 +127,11 @@ const { data: homepage } = await useSanityQuery(
 );
 
 const videoRef = ref(null);
-const videoWidth = ref(90);
+const videoWidth = ref(92);
 const videoHeight = ref(70);
 const videoBorderRadius = ref(16);
 const heroTextOffset = ref(0);
 const heroTextOpacity = ref(1);
-const taglineOpacity = ref(0);
 
 onMounted(() => {
   if (videoRef.value) {
@@ -172,7 +164,6 @@ onUnmounted(() => {
 const handleScroll = () => {
   const scrollPosition = window.scrollY;
   const windowHeight = window.innerHeight;
-  const docHeight = document.documentElement.scrollHeight;
 
   const expandEnd = windowHeight * 0.4;
 
@@ -196,19 +187,6 @@ const handleScroll = () => {
     const progress = scrollPosition / textFadeEnd;
     heroTextOffset.value = scrollPosition * 1.5;
     heroTextOpacity.value = Math.max(0, 1 - progress * 1.5);
-  }
-
-  // Tagline fade in — only visible in the last 300px of scroll
-  const distanceFromBottom = docHeight - (scrollPosition + windowHeight);
-  const taglineFadeZone = 300;
-
-  if (distanceFromBottom < taglineFadeZone) {
-    taglineOpacity.value = Math.min(
-      1,
-      (taglineFadeZone - distanceFromBottom) / taglineFadeZone,
-    );
-  } else {
-    taglineOpacity.value = 0;
   }
 };
 
@@ -243,10 +221,11 @@ useHead({
 
 .video-container {
   position: absolute;
-  top: 50%;
+  top: 46%;
   left: 50%;
   transform: translate(-50%, -50%);
   overflow: hidden;
+  max-width: 1280px;
   transition:
     width 0.3s ease-out,
     height 0.3s ease-out,
@@ -261,35 +240,19 @@ useHead({
   pointer-events: auto;
 }
 
-/* Tagline centered on video */
-.video-tagline {
-  position: absolute;
-  top: 70%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  pointer-events: none;
-  transition: opacity 0.15s ease-out;
-}
-
 video {
   object-position: center center;
 }
 
-/* Bottom reveal - small peek of video + tagline */
-.bottom-reveal {
+/* Footer - normal flow, z-index between hero and sections */
+.homepage-footer {
   position: relative;
   z-index: 5;
-  height: 5vh;
 }
 
 @media (max-width: 768px) {
   .hero-content-wrapper {
     bottom: 10%;
-  }
-
-  .bottom-reveal {
-    height: 5vh;
   }
 }
 </style>

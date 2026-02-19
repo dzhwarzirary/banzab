@@ -8,7 +8,7 @@
             <p
               class="text-xs uppercase tracking-[0.15em] text-gray-400 font-medium mb-6"
             >
-              Portfolio
+              Brands
             </p>
             <h2
               class="text-3xl md:text-4xl lg:text-5xl font-light tracking-tight text-gray-900 mb-5 leading-tight"
@@ -22,7 +22,7 @@
             <NuxtLink
               v-for="company in companies"
               :key="company._id"
-              :to="`/portfolio/${company.slug.current}`"
+              :to="`/brands/${company.slug.current}`"
               class="group block"
             >
               <div
@@ -109,7 +109,7 @@
           <!-- View All -->
           <div class="text-center mt-12">
             <NuxtLink
-              to="/portfolio"
+              to="/brands"
               class="inline-flex items-center gap-3 text-sm font-medium text-gray-900 hover:text-gray-500 transition-colors"
             >
               <span>View All Companies</span>
@@ -139,8 +139,8 @@ import { useSanityQuery } from "~/composables/useSanity";
 import { urlFor } from "~/utils/sanity";
 
 const { data: companies } = await useSanityQuery(
-  "home-portfolio",
-  `*[_type == "portfolioCompany"] | order(sortOrder asc) {
+  "home-brands",
+  `*[_type == "brand"] | order(sortOrder asc) {
     _id,
     name,
     slug,

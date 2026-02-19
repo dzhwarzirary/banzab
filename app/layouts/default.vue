@@ -9,7 +9,7 @@
     </main>
 
     <!-- Footer -->
-    <AppFooter />
+    <AppFooter v-if="!isHomePage" />
   </div>
 </template>
 
@@ -17,5 +17,5 @@
 const route = useRoute();
 
 // Check if we're on the home page
-const isHomePage = computed(() => route.path === '/');
+const isHomePage = computed(() => route.path === "/");
 </script>

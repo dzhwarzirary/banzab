@@ -123,7 +123,7 @@ const socialLinks = [
 ];
 
 const quickLinks = [
-  { name: "Portfolio", href: "/portfolio" },
+  { name: "Brands", href: "/brands" },
   { name: "Newsroom", href: "/newsroom" },
   { name: "Our Story", href: "/about" },
   { name: "Contact", href: "/contact" },

@@ -123,7 +123,7 @@ const mobileMenuOpen = ref(false);
 const route = useRoute();
 
 const navigation = [
-  { name: "Portfolio", href: "/portfolio" },
+  { name: "Brands", href: "/brands" },
   { name: "Newsroom", href: "/newsroom" },
   { name: "Our Story", href: "/about" },
 ];
@@ -140,9 +140,7 @@ const { data: settings } = await useSanityQuery(
 
 const logoUrl = computed(() => {
   if (!settings.value) return null;
-  const logo = isHomePage.value
-    ? settings.value.logoLight
-    : settings.value.logoDark;
+  const logo = settings.value.logoDark;
   if (!logo?.asset) return null;
   return urlFor(logo).height(56).auto("format").url();
 });

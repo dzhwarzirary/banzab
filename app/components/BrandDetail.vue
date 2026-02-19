@@ -3,7 +3,7 @@
     <!-- Back Link + Header -->
     <div class="max-w-6xl mx-auto px-6 md:px-8 mb-16 md:mb-24">
       <NuxtLink
-        to="/portfolio"
+        to="/brands"
         class="inline-flex items-center gap-2 text-sm text-gray-400 font-light hover:text-gray-900 transition-colors mb-6"
       >
         <svg
@@ -19,11 +19,10 @@
             d="M7 17l-4-4m0 0l4-4m-4 4h18"
           />
         </svg>
-        <span>Portfolio</span>
+        <span>Brands</span>
       </NuxtLink>
 
       <div class="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-8 items-end">
-        <!-- Left: Title + Description -->
         <div class="md:col-span-7">
           <div class="flex items-center gap-3 mb-5">
             <span
@@ -50,7 +49,6 @@
           </p>
         </div>
 
-        <!-- Right: Metadata -->
         <div class="md:col-span-5">
           <div class="grid grid-cols-2 gap-x-8 gap-y-6">
             <div>
@@ -156,7 +154,7 @@
       </div>
     </div>
 
-    <!-- Products / Menu -->
+    <!-- Product Categories -->
     <div
       v-if="company.productCategories && company.productCategories.length"
       class="max-w-6xl mx-auto px-6 md:px-8 mb-20 md:mb-28"
@@ -165,7 +163,7 @@
         <p
           class="text-xs uppercase tracking-[0.15em] text-gray-400 font-medium mb-5"
         >
-          Menu
+          Products
         </p>
         <h2
           class="text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 tracking-tight leading-tight mb-5"
@@ -180,108 +178,51 @@
         </p>
       </div>
 
-      <!-- Category Tabs -->
-      <div class="flex flex-wrap justify-center gap-2 mb-12 md:mb-16">
-        <button
+      <!-- Category Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <NuxtLink
           v-for="cat in company.productCategories"
           :key="cat._key"
-          @click="activeCategory = cat._key"
-          :class="[
-            'px-5 py-2.5 rounded-full text-sm font-medium transition-all',
-            activeCategory === cat._key
-              ? 'bg-gray-900 text-white'
-              : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700',
-          ]"
+          :to="`/brands/${brandSlug}/${cat.slug.current}`"
+          class="group block"
         >
-          {{ cat.name }}
-        </button>
-      </div>
-
-      <!-- Products Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <div
-          v-for="product in activeProducts"
-          :key="product._key"
-          class="rounded-2xl border border-gray-100 p-6"
-        >
-          <div class="flex items-start justify-between mb-4">
-            <h3
-              class="text-lg font-light text-gray-900 tracking-tight leading-snug pr-4"
-            >
-              {{ product.name }}
-            </h3>
-            <span class="text-sm font-light text-gray-400 flex-shrink-0">
-              {{
-                product.price
-                  ? `$${product.price.toFixed(2)}`
-                  : product.weight || ""
-              }}
-            </span>
-          </div>
-          <p
-            v-if="product.description"
-            class="text-sm text-gray-500 font-light leading-relaxed mb-5"
-          >
-            {{ product.description }}
-          </p>
-          <!-- Ingredients -->
           <div
-            v-if="product.ingredients && product.ingredients.length"
-            class="flex flex-wrap gap-1.5 mb-5"
+            class="rounded-2xl border border-gray-100 p-8 hover:border-gray-300 transition-colors"
           >
-            <span
-              v-for="ingredient in product.ingredients.slice(0, 4)"
-              :key="ingredient"
-              class="px-2.5 py-1 bg-gray-50 text-[11px] text-gray-500 font-medium rounded-full"
+            <div class="flex items-center justify-between mb-5">
+              <h3 class="text-lg font-light text-gray-900 tracking-tight">
+                {{ cat.name }}
+              </h3>
+              <div
+                class="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center group-hover:bg-gray-50 transition-colors"
+              >
+                <svg
+                  class="w-4 h-4 text-gray-400 group-hover:translate-x-0.5 transition-transform"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </div>
+            </div>
+            <p
+              v-if="cat.description"
+              class="text-sm text-gray-500 font-light leading-relaxed mb-4"
             >
-              {{ ingredient }}
-            </span>
-            <span
-              v-if="product.ingredients.length > 4"
-              class="px-2.5 py-1 bg-gray-50 text-[11px] text-gray-400 font-medium rounded-full"
-            >
-              +{{ product.ingredients.length - 4 }}
+              {{ cat.description }}
+            </p>
+            <span class="text-xs text-gray-400 font-medium">
+              {{ cat.products?.length || 0 }}
+              {{ cat.products?.length === 1 ? "product" : "products" }}
             </span>
           </div>
-          <!-- Nutrition -->
-          <div
-            v-if="product.nutrition"
-            class="flex items-center gap-5 pt-5 border-t border-gray-100"
-          >
-            <div v-if="product.nutrition.calories != null">
-              <div class="text-sm font-light text-gray-900">
-                {{ product.nutrition.calories }}
-              </div>
-              <div class="text-[10px] uppercase tracking-[0.1em] text-gray-400">
-                Cal
-              </div>
-            </div>
-            <div v-if="product.nutrition.protein != null">
-              <div class="text-sm font-light text-gray-900">
-                {{ product.nutrition.protein }}g
-              </div>
-              <div class="text-[10px] uppercase tracking-[0.1em] text-gray-400">
-                Protein
-              </div>
-            </div>
-            <div v-if="product.nutrition.fiber != null">
-              <div class="text-sm font-light text-gray-900">
-                {{ product.nutrition.fiber }}g
-              </div>
-              <div class="text-[10px] uppercase tracking-[0.1em] text-gray-400">
-                Fiber
-              </div>
-            </div>
-            <div v-if="product.nutrition.sugar != null">
-              <div class="text-sm font-light text-gray-900">
-                {{ product.nutrition.sugar }}g
-              </div>
-              <div class="text-[10px] uppercase tracking-[0.1em] text-gray-400">
-                Sugar
-              </div>
-            </div>
-          </div>
-        </div>
+        </NuxtLink>
       </div>
     </div>
 
@@ -337,10 +278,10 @@
         The company you're looking for doesn't exist or has been moved.
       </p>
       <NuxtLink
-        to="/portfolio"
+        to="/brands"
         class="inline-block bg-gray-900 text-white px-8 py-3.5 text-sm font-medium hover:bg-gray-800 transition-colors rounded-full"
       >
-        Browse Portfolio
+        Browse Brands
       </NuxtLink>
     </div>
   </div>
@@ -349,14 +290,16 @@
 <script setup>
 import { useSanityQuery } from "~/composables/useSanity";
 
-const route = useRoute();
-const slug = Array.isArray(route.params.slug)
-  ? route.params.slug.join("/")
-  : route.params.slug;
+const props = defineProps({
+  brandSlug: {
+    type: String,
+    required: true,
+  },
+});
 
 const { data: company } = await useSanityQuery(
-  `portfolio-${slug}`,
-  `*[_type == "portfolioCompany" && slug.current == $slug][0] {
+  `brand-${props.brandSlug}`,
+  `*[_type == "brand" && slug.current == $slug][0] {
     _id,
     name,
     slug,
@@ -373,28 +316,19 @@ const { data: company } = await useSanityQuery(
     highlights,
     productSectionTitle,
     productSectionSubtitle,
-    productCategories,
+    productCategories[] {
+      _key,
+      name,
+      slug,
+      description,
+      "productCount": count(products),
+      products
+    },
     ctaHeading,
     ctaDescription
   }`,
-  { slug },
+  { slug: props.brandSlug },
 );
-
-const activeCategory = ref("");
-
-watchEffect(() => {
-  if (company.value?.productCategories?.length && !activeCategory.value) {
-    activeCategory.value = company.value.productCategories[0]._key;
-  }
-});
-
-const activeProducts = computed(() => {
-  if (!company.value?.productCategories) return [];
-  const cat = company.value.productCategories.find(
-    (c) => c._key === activeCategory.value,
-  );
-  return cat?.products || [];
-});
 
 function extractText(block) {
   if (!block.children) return "";
@@ -404,7 +338,7 @@ function extractText(block) {
 useHead({
   title: computed(() =>
     company.value
-      ? `${company.value.name} - Banzab Portfolio`
+      ? `${company.value.name} - Banzab Brands`
       : "Company Not Found - Banzab",
   ),
   meta: computed(() => [
