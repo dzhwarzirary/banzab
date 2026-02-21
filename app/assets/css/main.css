@@ -76,3 +76,7 @@ html.lenis body {
     margin-top: -24px;
   }
 }
+
+button {
+  cursor: pointer;
+}

@@ -40,11 +40,7 @@
         >
           <div
             class="relative rounded-3xl overflow-hidden min-h-[480px] md:min-h-[560px] lg:min-h-[620px]"
-            :style="
-              !company.cardImage
-                ? { background: cardGradient(company.cardColor) }
-                : {}
-            "
+            :style="cardBackground(company)"
           >
             <!-- Card Image -->
             <img
@@ -61,9 +57,8 @@
               ></div>
             </div>
 
-            <div
-              class="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"
-            ></div>
+            <!-- Overlay -->
+            <div class="absolute inset-0" :style="cardOverlay(company)"></div>
 
             <div
               class="relative h-full min-h-[480px] md:min-h-[560px] lg:min-h-[620px] flex flex-col justify-between p-8 md:p-10 lg:p-14"
@@ -167,7 +162,7 @@ useHead({
     {
       name: "description",
       content:
-        "Explore Banzab's brands of food and beverage brands building the future of F&B in Kurdistan.",
+        "Explore Banzab's food and beverage brands building the future of F&B in Kurdistan.",
     },
   ],
 });
@@ -182,13 +177,43 @@ const { data: companies } = await useSanityQuery(
     category,
     founded,
     cardImage,
-    cardColor
+    cardColor,
+    cardOverlayIntensity
   }`,
 );
+
+function cardBackground(company) {
+  if (company.cardImage) return {};
+  return { background: cardGradient(company.cardColor) };
+}
+
+function cardOverlay(company) {
+  const intensity = company.cardOverlayIntensity ?? 40;
+  const opacity = intensity / 100;
+  const hex = company.cardColor?.hex;
+
+  if (company.cardImage && hex) {
+    return {
+      background: `linear-gradient(to top, ${hexToRgba(hex, opacity)} 0%, ${hexToRgba(hex, opacity * 0.4)} 50%, transparent 100%)`,
+    };
+  }
+
+  return {
+    background: `linear-gradient(to top, rgba(0,0,0,${opacity}) 0%, rgba(0,0,0,${opacity * 0.3}) 50%, transparent 100%)`,
+  };
+}
 
 function cardGradient(color) {
   const hex = color?.hex || "#1a1a2e";
   return `linear-gradient(135deg, ${hex} 0%, ${adjustBrightness(hex, -30)} 50%, #111827 100%)`;
+}
+
+function hexToRgba(hex, alpha) {
+  const num = parseInt(hex.replace("#", ""), 16);
+  const r = (num >> 16) & 255;
+  const g = (num >> 8) & 255;
+  const b = num & 255;
+  return `rgba(${r},${g},${b},${alpha})`;
 }
 
 function adjustBrightness(hex, amount) {

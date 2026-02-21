@@ -23,11 +23,35 @@
             Building exceptional companies that define industries through
             innovation, quality, and sustainable growth.
           </p>
+
+          <!-- Brand Logos -->
+          <div v-if="brands?.length" class="flex items-center gap-5 mb-8">
+            <NuxtLink
+              v-for="brand in brands"
+              :key="brand._id"
+              :to="`/brands/${brand.slug.current}`"
+              class="opacity-50 hover:opacity-100 transition-opacity"
+            >
+              <img
+                v-if="brand.logo"
+                :src="urlFor(brand.logo).height(28).auto('format').url()"
+                :alt="brand.name"
+                class="h-5 w-auto"
+              />
+              <span v-else class="text-xs text-gray-400 font-light">{{
+                brand.name
+              }}</span>
+            </NuxtLink>
+          </div>
+
+          <!-- Social Links -->
           <div class="flex space-x-6">
             <a
-              v-for="social in socialLinks"
+              v-for="social in activeSocialLinks"
               :key="social.name"
               :href="social.href"
+              target="_blank"
+              rel="noopener"
               class="text-gray-400 hover:text-white transition-colors duration-200 text-sm font-light tracking-wide uppercase"
               :aria-label="social.name"
             >
@@ -108,7 +132,18 @@ const currentYear = new Date().getFullYear();
 const { data: settings } = await useSanityQuery(
   "site-settings-footer",
   `*[_type == "siteSettings"][0] {
-    logoLight
+    logoLight,
+    linkedinUrl
+  }`,
+);
+
+const { data: brands } = await useSanityQuery(
+  "footer-brands",
+  `*[_type == "brand"] | order(sortOrder asc) {
+    _id,
+    name,
+    slug,
+    logo
   }`,
 );
 
@@ -117,10 +152,13 @@ const logoUrl = computed(() => {
   return urlFor(settings.value.logoLight).height(56).auto("format").url();
 });
 
-const socialLinks = [
-  { name: "Instagram", href: "#" },
-  { name: "LinkedIn", href: "#" },
-];
+const activeSocialLinks = computed(() => {
+  const links = [];
+  if (settings.value?.linkedinUrl) {
+    links.push({ name: "LinkedIn", href: settings.value.linkedinUrl });
+  }
+  return links;
+});
 
 const quickLinks = [
   { name: "Brands", href: "/brands" },

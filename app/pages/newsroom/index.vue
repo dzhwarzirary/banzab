@@ -15,7 +15,7 @@
       <p
         class="text-base text-gray-500 font-light leading-relaxed max-w-md mx-auto"
       >
-        News, insights, and updates from Banzab and our portfolio companies.
+        News, insights, and updates from Banzab and our brands.
       </p>
     </div>
 
@@ -96,7 +96,7 @@ useHead({
     {
       name: "description",
       content:
-        "Stay up to date with the latest news, insights, and updates from Banzab and our portfolio companies.",
+        "Stay up to date with the latest news, insights, and updates from Banzab and our brands.",
     },
   ],
 });

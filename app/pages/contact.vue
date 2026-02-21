@@ -5,24 +5,32 @@
       <p
         class="text-xs uppercase tracking-[0.15em] text-gray-400 font-medium mb-5"
       >
-        Contact
+        {{ contactPage?.eyebrow || "Contact" }}
       </p>
       <h1
         class="text-4xl md:text-5xl lg:text-6xl font-light text-gray-900 tracking-tight leading-tight mb-5"
       >
-        Get in touch
+        {{ contactPage?.heading || "Get in touch" }}
       </h1>
       <p
         class="text-base text-gray-500 font-light leading-relaxed max-w-md mx-auto"
       >
-        Reach out to discuss partnerships, opportunities, or anything else.
+        {{
+          contactPage?.subtitle ||
+          "Reach out to discuss partnerships, opportunities, or anything else."
+        }}
       </p>
     </div>
 
     <!-- Contact Info Row -->
     <div class="max-w-3xl mx-auto px-6 md:px-8 mb-14 md:mb-20">
       <div
-        class="grid grid-cols-1 md:grid-cols-2 gap-px bg-gray-200 rounded-2xl overflow-hidden"
+        class="grid gap-px bg-gray-200 rounded-2xl overflow-hidden"
+        :class="
+          displayPhone
+            ? 'grid-cols-1 md:grid-cols-3'
+            : 'grid-cols-1 md:grid-cols-2'
+        "
       >
         <div class="bg-white p-8 text-center">
           <div
@@ -31,10 +39,10 @@
             Email
           </div>
           <a
-            href="mailto:hello@banzab.com"
+            :href="`mailto:${displayEmail}`"
             class="text-sm text-gray-900 font-light hover:text-gray-500 transition-colors"
           >
-            hello@banzab.com
+            {{ displayEmail }}
           </a>
         </div>
         <div class="bg-white p-8 text-center">
@@ -44,8 +52,21 @@
             Location
           </div>
           <p class="text-sm text-gray-900 font-light">
-            Erbil, Kurdistan Region
+            {{ displayLocation }}
           </p>
+        </div>
+        <div v-if="displayPhone" class="bg-white p-8 text-center">
+          <div
+            class="text-[11px] uppercase tracking-[0.12em] text-gray-400 font-medium mb-2"
+          >
+            Phone
+          </div>
+          <a
+            :href="`tel:${displayPhone}`"
+            class="text-sm text-gray-900 font-light hover:text-gray-500 transition-colors"
+          >
+            {{ displayPhone }}
+          </a>
         </div>
       </div>
     </div>
@@ -60,7 +81,7 @@
       <p
         class="text-xs uppercase tracking-[0.15em] text-gray-400 font-medium text-center mb-10"
       >
-        Send a message
+        {{ contactPage?.formEyebrow || "Send a message" }}
       </p>
 
       <form @submit.prevent="submitForm" class="space-y-6">
@@ -77,10 +98,13 @@
             class="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm text-gray-900 font-light focus:ring-1 focus:ring-gray-900 focus:border-gray-900 transition-colors bg-white appearance-none"
           >
             <option value="">Select type...</option>
-            <option value="partnership">Partnership Opportunity</option>
-            <option value="investor">Investor Relations</option>
-            <option value="general">General Inquiry</option>
-            <option value="press">Press & Media</option>
+            <option
+              v-for="type in displayInquiryTypes"
+              :key="type"
+              :value="type"
+            >
+              {{ type }}
+            </option>
           </select>
         </div>
 
@@ -218,7 +242,10 @@
       <!-- Success -->
       <div v-if="submitted" class="mt-8 p-6 bg-gray-50 rounded-2xl text-center">
         <p class="text-sm text-gray-900 font-light">
-          Thank you for your message. We'll get back to you within 24 hours.
+          {{
+            contactPage?.successMessage ||
+            "Thank you for your message. We'll get back to you within 24 hours."
+          }}
         </p>
       </div>
     </div>
@@ -226,6 +253,44 @@
 </template>
 
 <script setup>
+import { useSanityQuery } from "~/composables/useSanity";
+
+const { data: contactPage } = await useSanityQuery(
+  "contact-page",
+  `*[_type == "contactPage"][0] {
+    eyebrow,
+    heading,
+    subtitle,
+    email,
+    location,
+    phone,
+    formEyebrow,
+    inquiryTypes,
+    successMessage
+  }`,
+);
+
+const displayEmail = computed(
+  () => contactPage.value?.email || "hello@banzab.com",
+);
+const displayLocation = computed(
+  () => contactPage.value?.location || "Erbil, Kurdistan Region",
+);
+const displayPhone = computed(() => contactPage.value?.phone || null);
+
+const fallbackInquiryTypes = [
+  "Partnership Opportunity",
+  "Investor Relations",
+  "General Inquiry",
+  "Press & Media",
+];
+
+const displayInquiryTypes = computed(() => {
+  return contactPage.value?.inquiryTypes?.length
+    ? contactPage.value.inquiryTypes
+    : fallbackInquiryTypes;
+});
+
 useHead({
   title: "Contact - Banzab",
   meta: [

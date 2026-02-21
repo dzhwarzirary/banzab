@@ -47,6 +47,49 @@
           >
             {{ company.description }}
           </p>
+
+          <!-- Instagram Link -->
+          <a
+            v-if="company.instagramUrl"
+            :href="company.instagramUrl"
+            target="_blank"
+            rel="noopener"
+            class="inline-flex items-center gap-2 mt-6 border border-gray-200 px-4 py-2 rounded-full text-sm font-light text-gray-500 hover:text-gray-900 hover:border-gray-400 transition-colors"
+          >
+            <svg
+              class="w-4 h-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <circle cx="12" cy="12" r="5" />
+              <circle
+                cx="17.5"
+                cy="6.5"
+                r="1"
+                fill="currentColor"
+                stroke="none"
+              />
+            </svg>
+            <span>Follow on Instagram</span>
+            <svg
+              class="w-3.5 h-3.5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M7 17L17 7M17 7H7M17 7v10"
+              />
+            </svg>
+          </a>
         </div>
 
         <div class="md:col-span-5">
@@ -243,11 +286,34 @@
         >
           {{ company.ctaDescription }}
         </p>
-        <NuxtLink
-          to="/contact"
+        <a
+          v-if="isExternalCtaLink"
+          :href="company.ctaButtonLink"
+          target="_blank"
+          rel="noopener"
           class="inline-flex items-center gap-3 text-white border border-white/30 px-8 py-3.5 rounded-full text-sm font-medium hover:bg-white/10 hover:border-white/50 transition-all"
         >
-          <span>Get in Touch</span>
+          <span>{{ company.ctaButtonText || "Get in Touch" }}</span>
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+              d="M7 17L17 7M17 7H7M17 7v10"
+            />
+          </svg>
+        </a>
+        <NuxtLink
+          v-else
+          :to="company.ctaButtonLink || '/contact'"
+          class="inline-flex items-center gap-3 text-white border border-white/30 px-8 py-3.5 rounded-full text-sm font-medium hover:bg-white/10 hover:border-white/50 transition-all"
+        >
+          <span>{{ company.ctaButtonText || "Get in Touch" }}</span>
           <svg
             class="w-4 h-4"
             fill="none"
@@ -311,6 +377,7 @@ const { data: company } = await useSanityQuery(
     location,
     metaLabel,
     metaValue,
+    instagramUrl,
     aboutHeading,
     aboutBody,
     highlights,
@@ -325,7 +392,9 @@ const { data: company } = await useSanityQuery(
       products
     },
     ctaHeading,
-    ctaDescription
+    ctaDescription,
+    ctaButtonText,
+    ctaButtonLink
   }`,
   { slug: props.brandSlug },
 );
@@ -334,6 +403,12 @@ function extractText(block) {
   if (!block.children) return "";
   return block.children.map((child) => child.text).join("");
 }
+
+const isExternalCtaLink = computed(() => {
+  const link = company.value?.ctaButtonLink;
+  if (!link) return false;
+  return link.startsWith("http://") || link.startsWith("https://");
+});
 
 useHead({
   title: computed(() =>
