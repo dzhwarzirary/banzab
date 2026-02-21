@@ -16,9 +16,9 @@
           </div>
 
           <!-- Quote -->
-          <div class="max-w-4xl mx-auto mb-20 md:mb-28 text-center">
+          <div class="max-w-3xl mx-auto mb-20 md:mb-28 text-center">
             <blockquote
-              class="text-3xl md:text-4xl lg:text-5xl font-light text-gray-900 leading-snug mb-10"
+              class="text-2xl md:text-4xl lg:text-3xl font-light text-gray-900 leading-snug mb-10"
             >
               "{{
                 data?.quoteText ||

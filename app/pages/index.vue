@@ -39,9 +39,9 @@
                 class="flex flex-col md:flex-row md:items-end md:justify-between gap-8"
               >
                 <!-- Left: Large text -->
-                <div class="max-w-3xl">
+                <div class="max-w-2xl">
                   <h1
-                    class="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-white tracking-tight leading-[1.1]"
+                    class="text-4xl md:text-2xl lg:text-3xl xl:text-5xl font-light text-white tracking-tight leading-[1.1]"
                   >
                     {{
                       homepage?.heroHeading ||
